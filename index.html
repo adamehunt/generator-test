@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guy Fieri Recipe Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.11/htmx.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #FDF5E6;
+        }
+        h1 {
+            color: #FF6600;
+        }
+        #recipe {
+            font-size: 24px;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #333;
+        }
+        button {
+            background-color: #FF6600;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #E65100;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guy Fieri's Flavortown Recipe Generator</h1>
+    <div id="recipe">
+        Click the button to generate a recipe!
+    </div>
+    <button onclick="generateAndDisplayRecipe()">Generate Recipe</button>
+
+    <script>
+        const array1 = ["one", "two", "three", "four"];
+        const array2 = ["one", "two", "three", "four"];
+        const array3 = ["one", "two", "three", "four"];
+        const array4 = ["one", "two", "three", "four"];
+
+        function getRandomWord(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function generateRecipe() {
+            return `${getRandomWord(array1)} ${getRandomWord(array2)} ${getRandomWord(array3)} ${getRandomWord(array4)}`;
+        }
+
+        function generateAndDisplayRecipe() {
+            document.getElementById('recipe').innerText = generateRecipe();
+        }
+
+        // Generate a recipe on page load
+        generateAndDisplayRecipe();
+    </script>
+</body>
+</html>
