@@ -32,9 +32,9 @@
             margin-bottom: 20px;
         }
         .action-btn {
-            background-color: #FF4500;
-            color: #000000;
-            border: none;
+            background-color: transparent;
+            color: #FF4500;
+            border: 2px solid #FF4500;
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
@@ -42,8 +42,12 @@
             transition: all 0.3s ease;
         }
         .action-btn:hover {
-            background-color: #FFA500;
+            background-color: rgba(255, 69, 0, 0.2);
             box-shadow: 0 0 15px #FF4500;
+        }
+        #generate-btn {
+            background-color: #FF4500;
+            color: #000000;
         }
         #recipe-container {
             display: flex;
@@ -67,14 +71,19 @@
             font-size: 18px;
             color: #FFA500;
             font-weight: bold;
+            flex-grow: 1;
         }
-        .close-btn {
-            background-color: #FF4500;
-            color: #000000;
-            border: none;
+        .card-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .card-btn {
+            background-color: transparent;
+            color: #FF4500;
+            border: 2px solid #FF4500;
             border-radius: 50%;
-            width: 25px;
-            height: 25px;
+            width: 30px;
+            height: 30px;
             font-size: 16px;
             cursor: pointer;
             display: flex;
@@ -82,9 +91,17 @@
             align-items: center;
             transition: all 0.3s ease;
         }
-        .close-btn:hover {
-            background-color: #FFA500;
+        .card-btn:hover {
+            background-color: rgba(255, 69, 0, 0.2);
             box-shadow: 0 0 10px #FF4500;
+        }
+        .pinned {
+            order: -1;
+            border-color: #FFD700;
+        }
+        .pinned .card-btn {
+            border-color: #FFD700;
+            color: #FFD700;
         }
     </style>
 </head>
@@ -92,7 +109,7 @@
     <h1>Guy Fieri's Flavortown Recipe Generator</h1>
     <img id="guy-fieri-img" src="/api/placeholder/300/300" alt="Guy Fieri">
     <div id="button-container">
-        <button class="action-btn" onclick="generateAndDisplayRecipe()">Generate Recipe</button>
+        <button id="generate-btn" class="action-btn" onclick="generateAndDisplayRecipe()">Generate Recipe</button>
         <button class="action-btn" onclick="clearAllRecipes()">Clear All</button>
     </div>
     <div id="recipe-container"></div>
@@ -120,21 +137,56 @@
             recipeText.className = 'recipe-text';
             recipeText.textContent = generateRecipe();
             
+            const cardButtons = document.createElement('div');
+            cardButtons.className = 'card-buttons';
+
+            const pinBtn = document.createElement('button');
+            pinBtn.className = 'card-btn pin-btn';
+            pinBtn.innerHTML = '📌';
+            pinBtn.onclick = function() {
+                recipeCard.classList.toggle('pinned');
+                sortCards();
+            };
+
             const closeBtn = document.createElement('button');
-            closeBtn.className = 'close-btn';
+            closeBtn.className = 'card-btn close-btn';
             closeBtn.innerHTML = '&times;';
             closeBtn.onclick = function() {
                 recipeContainer.removeChild(recipeCard);
             };
             
+            cardButtons.appendChild(pinBtn);
+            cardButtons.appendChild(closeBtn);
             recipeCard.appendChild(recipeText);
-            recipeCard.appendChild(closeBtn);
-            recipeContainer.appendChild(recipeCard);
+            recipeCard.appendChild(cardButtons);
+            
+            // Insert the new card at the top, just after any pinned cards
+            const firstUnpinnedCard = Array.from(recipeContainer.children).find(card => !card.classList.contains('pinned'));
+            if (firstUnpinnedCard) {
+                recipeContainer.insertBefore(recipeCard, firstUnpinnedCard);
+            } else {
+                recipeContainer.appendChild(recipeCard);
+            }
         }
 
         function clearAllRecipes() {
             const recipeContainer = document.getElementById('recipe-container');
             recipeContainer.innerHTML = '';
+        }
+
+        function sortCards() {
+            const recipeContainer = document.getElementById('recipe-container');
+            const cards = Array.from(recipeContainer.children);
+            cards.sort((a, b) => {
+                const aPinned = a.classList.contains('pinned');
+                const bPinned = b.classList.contains('pinned');
+                if (aPinned === bPinned) {
+                    // If both cards have the same pinned status, maintain their relative order
+                    return cards.indexOf(a) - cards.indexOf(b);
+                }
+                return aPinned ? -1 : 1;
+            });
+            cards.forEach(card => recipeContainer.appendChild(card));
         }
     </script>
 </body>
