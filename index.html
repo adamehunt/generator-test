@@ -3,52 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guy Fieri Recipe Generator</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.11/htmx.min.js"></script>
+    <title>Guy Fieri's Flavortown Recipe Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            text-align: center;
-            background-color: #FDF5E6;
+            background-color: #000000;
+            color: #FFA500;
         }
         h1 {
-            color: #FF6600;
+            text-align: center;
+            text-shadow: 0 0 10px #FF4500;
+            margin-bottom: 10px;
         }
-        #recipe {
-            font-size: 24px;
-            margin: 20px 0;
-            font-weight: bold;
-            color: #333;
+        #guy-fieri-img {
+            display: block;
+            margin: 0 auto 20px;
+            max-width: 200px;
+            border-radius: 50%;
+            border: 5px solid #FF4500;
         }
-        button {
-            background-color: #FF6600;
-            color: white;
+        #button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .action-btn {
+            background-color: #FF4500;
+            color: #000000;
             border: none;
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
             border-radius: 5px;
+            transition: all 0.3s ease;
         }
-        button:hover {
-            background-color: #E65100;
+        .action-btn:hover {
+            background-color: #FFA500;
+            box-shadow: 0 0 15px #FF4500;
+        }
+        #recipe-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .recipe-card {
+            background-color: #1A0500;
+            border: 2px solid #FF4500;
+            border-radius: 5px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .recipe-card:hover {
+            box-shadow: 0 0 15px #FF4500;
+        }
+        .recipe-text {
+            font-size: 18px;
+            color: #FFA500;
+            font-weight: bold;
+        }
+        .close-btn {
+            background-color: #FF4500;
+            color: #000000;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .close-btn:hover {
+            background-color: #FFA500;
+            box-shadow: 0 0 10px #FF4500;
         }
     </style>
 </head>
 <body>
     <h1>Guy Fieri's Flavortown Recipe Generator</h1>
-    <div id="recipe">
-        Click the button to generate a recipe!
+    <img id="guy-fieri-img" src="/api/placeholder/300/300" alt="Guy Fieri">
+    <div id="button-container">
+        <button class="action-btn" onclick="generateAndDisplayRecipe()">Generate Recipe</button>
+        <button class="action-btn" onclick="clearAllRecipes()">Clear All</button>
     </div>
-    <button onclick="generateAndDisplayRecipe()">Generate Recipe</button>
+    <div id="recipe-container"></div>
 
     <script>
-        const array1 = ["one", "two", "three", "four"];
-        const array2 = ["one", "two", "three", "four"];
-        const array3 = ["one", "two", "three", "four"];
-        const array4 = ["one", "two", "three", "four"];
+        const array1 = ["Smokin'", "Rockin'", "Blazin'", "Slammin'"];
+        const array2 = ["Bacon", "Jalapeno", "BBQ", "Cheese"];
+        const array3 = ["Explosion", "Fiesta", "Bonanza", "Meltdown"];
+        const array4 = ["Burger", "Fries", "Nachos", "Sandwich"];
 
         function getRandomWord(array) {
             return array[Math.floor(Math.random() * array.length)];
@@ -59,11 +112,30 @@
         }
 
         function generateAndDisplayRecipe() {
-            document.getElementById('recipe').innerText = generateRecipe();
+            const recipeContainer = document.getElementById('recipe-container');
+            const recipeCard = document.createElement('div');
+            recipeCard.className = 'recipe-card';
+            
+            const recipeText = document.createElement('div');
+            recipeText.className = 'recipe-text';
+            recipeText.textContent = generateRecipe();
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'close-btn';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.onclick = function() {
+                recipeContainer.removeChild(recipeCard);
+            };
+            
+            recipeCard.appendChild(recipeText);
+            recipeCard.appendChild(closeBtn);
+            recipeContainer.appendChild(recipeCard);
         }
 
-        // Generate a recipe on page load
-        generateAndDisplayRecipe();
+        function clearAllRecipes() {
+            const recipeContainer = document.getElementById('recipe-container');
+            recipeContainer.innerHTML = '';
+        }
     </script>
 </body>
 </html>
